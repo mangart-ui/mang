@@ -6,23 +6,24 @@
     <title>mang</title>
     <link rel="icon" href="favicon.png">
     
-    <!-- 폰트: 도트 서체(DotGothic16) 및 세련된 고딕(Inter) 로드 -->
+    <!-- 타이포그래피 전문 폰트(Syne) 및 픽셀 도트(DotGothic16) 장착 -->
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
-    <link href="https://googleapis.com/css2?family=DotGothic16&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://googleapis.com/css2?family=DotGothic16&family=Syne:wght@700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --bg-deep: #050507;
-            --accent-neon: #00f0ff; /* 마우스 오버 시 라인 포인트 컬러 */
-            --glass-border: rgba(255, 255, 255, 0.15);
+            --bg-deep: #040406;
+            --accent-neon: #00f0ff; /* 네온 블루 */
+            --accent-purple: #7f00ff; /* 네온 퍼플 */
+            --glass-border: rgba(255, 255, 255, 0.08);
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'DotGothic16', sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
         }
 
         body {
@@ -36,7 +37,7 @@
             overflow: hidden;
         }
 
-        /* 🎬 [신규] 3초간 작동하는 '로딩 중...' 오프닝 화면 */
+        /* 🎬 [업그레이드] 3초 기하학적 추상 그래픽 오프닝 화면 */
         .loading-screen {
             position: fixed;
             inset: 0;
@@ -46,39 +47,51 @@
             align-items: center;
             justify-content: center;
             pointer-events: none;
-            /* 2.6초 동안 유지 후 0.4초간 스르륵 사라짐 (총 3초) */
             animation: fadeOutScreen 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-            animation-delay: 2.6s; 
+            animation-delay: 2.6s; /* 정확히 3초 바인딩 연출 */
         }
 
-        /* 로딩 텍스트 & 점 디자인 */
-        .loading-text {
-            font-size: 24px;
-            letter-spacing: 2px;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
+        /* 기하학적 조립 도형 코어 */
+        .geo-loader {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            transform: rotate(45deg); /* 마름모 형태 배치 */
+            animation: geoRotate 2.5s cubic-bezier(0.68, -0.6, 0.32, 1.6) infinite;
         }
 
-        /* 도트 점(...)들이 순차적으로 튀는 애니메이션 */
-        .dots span {
-            animation: blink 1.2s infinite both;
+        .geo-loader::before, .geo-loader::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 2px solid var(--accent-neon);
+            box-shadow: 0 0 15px var(--accent-neon);
+            animation: geoPulse 1.2s ease-in-out infinite alternate;
         }
-        .dots span:nth-child(1) { animation-delay: 0.2s; }
-        .dots span:nth-child(2) { animation-delay: 0.4s; }
-        .dots span:nth-child(3) { animation-delay: 0.6s; }
 
-        @keyframes blink {
-            0% { opacity: 0; transform: translateY(0); }
-            50% { opacity: 1; transform: translateY(-4px); } /* 점이 살짝 위로 튕김 */
-            100% { opacity: 0; transform: translateY(0); }
+        .geo-loader::after {
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 15px var(--accent-purple);
+            transform: scale(0.6) rotate(45deg);
+            animation-delay: 0.6s;
+        }
+
+        @keyframes geoRotate {
+            0% { transform: rotate(45deg) scale(0.8); }
+            50% { transform: rotate(225deg) scale(1.2); }
+            100% { transform: rotate(405deg) scale(0.8); }
+        }
+
+        @keyframes geoPulse {
+            0% { opacity: 0.3; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1.1); }
         }
 
         @keyframes fadeOutScreen {
-            to { opacity: 0; visibility: hidden; }
+            to { opacity: 0; visibility: hidden; transform: scale(1.1); }
         }
 
-        /* 🖼 * 배경: 서서히 확대 + 앵글 무빙 (Ken Burns) */
+        /* 🖼️ 배경: 서서히 확대 + 앵글 무빙 */
         .bg-layer {
             position: fixed;
             top: -10%;
@@ -104,224 +117,196 @@
 
         @keyframes kenBurns {
             0% { transform: scale(1.02) translate(0%, 0%) rotate(0deg); }
-            100% { transform: scale(1.15) translate(-2.5%, -1.5%) rotate(0.3deg); }
+            100% { transform: scale(1.12) translate(-2%, -1%) rotate(0.3deg); }
         }
 
-        /* 🕶️ 오버레이: 부드럽고 어두운 보랏빛 필터 */
+        /* 🕶️ 오버레이: 부드럽고 어두운 베이스 필터 */
         .bg-overlay {
             position: fixed;
             inset: 0;
             background: linear-gradient(
                 135deg,
-                rgba(5, 5, 8, 0.55) 0%,
-                rgba(12, 6, 20, 0.75) 50%,
-                rgba(5, 5, 8, 0.88) 100%
+                rgba(4, 4, 6, 0.5) 0%,
+                rgba(8, 4, 12, 0.75) 50%,
+                rgba(4, 4, 6, 0.9) 100%
             );
             z-index: 3;
             pointer-events: none;
         }
 
-        /* 🎴 메인 반응형 레이아웃 전체 컨테이너 */
-        .master-container {
+        /* 💜 [복구] 작가님이 요청하신 신비로운 보라색 네온 광채 스팟 */
+        .bg-glow {
+            position: fixed;
+            width: 700px;
+            height: 700px;
+            background: radial-gradient(circle, rgba(127, 0, 255, 0.12) 0%, rgba(0, 0, 0, 0) 65%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* 🎴 하이엔드 단일 레이아웃 컨테이너 */
+        .content-card {
             position: relative;
             z-index: 10;
             width: 92%;
-            max-width: 900px;
-            display: flex;
-            gap: 40px;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* 📦 왼쪽: 바이오(소개) 프로필 박스 */
-        .bio-panel {
-            flex: 1;
-            max-width: 380px;
+            max-width: 500px;
             background: rgba(255, 255, 255, 0.01);
             border: 1px solid var(--glass-border);
-            padding: 45px 35px;
+            padding: 55px 40px;
+            border-radius: 28px;
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
-            text-align: left;
-            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+            text-align: center;
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.7);
             
-            /* 로딩창이 걷히는 2.8초 시점에 부드럽게 등장 */
+            /* 오프닝 끝나는 시점에 연기처럼 등장하는 인 애니메이션 */
             opacity: 0;
             transform: translateY(30px);
-            animation: panelFadeIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            animation-delay: 2.7s; 
+            animation: panelFadeIn 1.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: 2.6s;
         }
 
         @keyframes panelFadeIn {
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .bio-title {
-            font-size: 34px;
-            letter-spacing: 2px;
-            margin-bottom: 24px;
-            color: #ffffff;
-            line-height: 1.2;
+        /* 타이틀 로고 타입 디자인 */
+        .name {
+            font-family: 'Syne', sans-serif;
+            font-weight: 800;
+            font-size: 72px;
+            text-transform: uppercase;
+            letter-spacing: -2px;
+            line-height: 1;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #ffffff 40%, #a8a8a8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .bio-text {
+        /* [수정] 캐릭터 일러스트레이터 깔끔 지정 */
+        .bio {
+            font-family: 'DotGothic16', sans-serif;
             font-size: 14px;
-            color: #9c9c9c;
-            line-height: 1.8;
-            letter-spacing: 0.5px;
+            color: #75757a;
+            margin-bottom: 45px;
+            letter-spacing: 1px;
         }
 
-        /* 📦 오른쪽: 계단식 메뉴 리스트 */
-        .menu-panel {
+        /* 🟦 [신규] 정사각형 그리드 겹침 그룹 */
+        .grid-nav {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 기본 가로 3열 배열 */
+            gap: 16px;
+            justify-content: center;
+        }
+
+        /* 🔗 정사각형 하이엔드 아이콘 단추 디자인 */
+        .grid-btn {
+            position: relative;
+            aspect-ratio: 1 / 1; /* 가로세로 1:1 완벽한 정사각형 유지 */
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            width: 100%;
-            max-width: 440px;
-        }
-
-        /* 🔗 계단식 링크 카드 유닛 */
-        .menu-card {
-            position: relative;
-            display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 22px 30px;
+            justify-content: center;
             background: rgba(255, 255, 255, 0.02);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            color: #cdcdcd;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            color: #b5b5bd;
             text-decoration: none;
-            font-size: 15px;
-            letter-spacing: 1px;
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-            overflow: hidden;
-            
-            /* 순차적으로 등장하는 스태거 애니메이션 */
-            opacity: 0;
-            transform: translateY(20px);
-            animation: cardFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        @keyframes cardFadeIn {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* 🕒 로딩 이후 순차적으로 켜지는 스태거 타임라인 설정 */
-        .menu-card:nth-child(1) { animation-delay: 2.9s; width: 85%; align-self: flex-start; }
-        .menu-card:nth-child(2) { animation-delay: 3.1s; width: 88%; align-self: flex-start; }
-        .menu-card:nth-child(3) { animation-delay: 3.3s; width: 92%; align-self: flex-start; }
-        .menu-card:nth-child(4) { animation-delay: 3.5s; width: 96%; align-self: flex-start; }
-        .menu-card:nth-child(5) { animation-delay: 3.7s; width: 100%; align-self: flex-start; }
-
-        /* 하단 언더라인 베이스 선 연출 */
-        .menu-card::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background: var(--accent-neon);
-            transition: width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-
-        /* 💡 마우스 오버 시 상위호환 액션 */
-        .menu-card:hover {
-            color: #ffffff;
-            background: rgba(255, 255, 255, 0.05);
-            transform: translateX(12px);
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
-        }
-
-        .menu-card:hover::after {
-            width: 100%;
-        }
-
-        /* 화살표 아이콘 */
-        .menu-card span:last-child {
             font-size: 13px;
-            opacity: 0.3;
+            font-weight: 500;
+            letter-spacing: 0.5px;
             transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        .menu-card:hover span:last-child {
+        /* 4번째, 5번째 단추를 중앙 밸런스 배치하기 위한 그리드 제어 */
+        .grid-btn:nth-child(4) { grid-column: calc(1); }
+        .grid-btn:nth-child(5) { grid-column: calc(2); }
+
+        /* 💡 마우스 호버 정사각형 발광 매커니즘 */
+        .grid-btn:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--accent-neon);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 240, 255, 0.15), 0 0 15px rgba(0, 240, 255, 0.1);
+        }
+
+        /* 화살표 아이콘 장식 */
+        .grid-btn .arrow {
+            margin-top: 8px;
+            font-size: 11px;
+            opacity: 0.3;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .grid-btn:hover .arrow {
             opacity: 1;
             color: var(--accent-neon);
-            transform: translateX(4px);
+            transform: scale(1.2);
         }
 
-        /* 📱 모바일 대응 가로폭 조절 */
-        @media (max-width: 800px) {
-            .master-container {
-                flex-direction: column;
-                gap: 30px;
-                padding-top: 40px;
+        /* 📱 모바일 디스플레이 2열 교차 자동 밸런싱 */
+        @media (max-width: 480px) {
+            .content-card {
+                padding: 45px 24px;
             }
-            .bio-panel {
-                max-width: 100%;
-                width: 100%;
+            .name { font-size: 58px; }
+            .grid-nav {
+                grid-template-columns: repeat(2, 1fr); /* 모바일은 2열 배열로 안정화 */
             }
-            .menu-panel {
-                max-width: 100%;
-            }
-            .menu-card {
-                width: 100% !important;
-            }
+            .grid-btn:nth-child(4) { grid-column: auto; }
+            .grid-btn:nth-child(5) { grid-column: auto; }
         }
     </style>
 </head>
 <body>
 
-    <!-- 🎬 [신규] loading... 점점점 오프닝 스크린막 -->
+    <!-- 🎬 추상 기하학 구조 로딩 오프닝 스테이지 -->
     <div class="loading-screen">
-        <div class="loading-text">
-            loading<span class="dots"><span>.</span><span>.</span><span>.</span></span>
-        </div>
+        <div class="geo-loader"></div>
     </div>
 
-    <!-- 🖼️ 영화 같은 디졸브 배경 레이어 -->
+    <!-- 🖼️ 슬라이더 백그라운드 스펙트럼 -->
     <div class="bg-layer bg-animate active" id="bg1"></div>
     <div class="bg-layer bg-animate" id="bg2"></div>
     <div class="bg-overlay"></div>
+    <div class="bg-glow"></div> <!-- 💜 보라색 네온 완벽 복구 완료 -->
 
-    <!-- 🎴 전체 레이아웃 바디 -->
-    <div class="master-container">
-        
-        <!-- 왼쪽 소개 박스 -->
-        <div class="bio-panel">
-            <h1 class="bio-title">MANG</h1>
-            <p class="bio-text">
-                hihi<br>
-                i might be a<br>
-                character illustrator &amp;<br>
-                concept designer.
-            </p>
-        </div>
+    <!-- 🎴 메인 반응형 카드 -->
+    <div class="content-card">
+        <h1 class="name">mang</h1>
+        <p class="bio">CHARACTER ILLUSTRATOR</p>
 
-        <!-- 오른쪽 계단식 카드 메뉴 그룹 -->
-        <div class="menu-panel">
-            <a href="https://x.com/KRIMP1723322" class="menu-card" target="_blank">
+        <!-- 🟦 요청하신 정사각형 그리드 인터페이스 시스템 -->
+        <div class="grid-nav">
+            <a href="https://x.com/KRIMP1723322" class="grid-btn" target="_blank">
                 <span>X (트위터)</span>
-                <span>→</span>
+                <span class="arrow">■</span>
             </a>
-            <a href="#" class="menu-card" target="_blank">
-                <span>픽시브 (Pixiv)</span>
-                <span>→</span>
+            <a href="#" class="grid-btn" target="_blank">
+                <span>Pixiv</span>
+                <span class="arrow">■</span>
             </a>
-            <a href="#" class="menu-card" target="_blank">
-                <span>커미션 (Commission)</span>
-                <span>→</span>
+            <a href="#" class="grid-btn" target="_blank">
+                <span>Commission</span>
+                <span class="arrow">■</span>
             </a>
-            <a href="#" class="menu-card" target="_blank">
-                <span>유튜브 (YouTube)</span>
-                <span>→</span>
+            <a href="#" class="grid-btn" target="_blank">
+                <span>YouTube</span>
+                <span class="arrow">■</span>
             </a>
-            <a href="#" class="menu-card" target="_blank">
-                <span>인스타그램 (Instagram)</span>
-                <span>→</span>
+            <a href="#" class="grid-btn" target="_blank">
+                <span>Instagram</span>
+                <span class="arrow">■</span>
             </a>
         </div>
-
     </div>
 
     <script>
+        // ==================== 🎨 본인 일러스트 이미지 주소 설정 ====================
+        const images = [
